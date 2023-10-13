@@ -2,7 +2,6 @@ import { parse, printSchema } from 'graphql';
 import LRU from 'lru-cache';
 import { composeServices } from '@apollo/composition';
 import { compose, signatureHeaderName, verifyRequest } from '@graphql-hive/external-composition';
-import { Response } from '@whatwg-node/fetch';
 import { createServerAdapter } from '@whatwg-node/server';
 import { ResolvedEnv } from './environment';
 

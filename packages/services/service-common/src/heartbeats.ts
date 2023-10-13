@@ -1,10 +1,5 @@
 import pRetry from 'p-retry';
-import { createFetch } from '@whatwg-node/fetch';
 import { invariant } from './helpers';
-
-const { fetch } = createFetch({
-  useNodeFetch: true,
-});
 
 type Heartbeats = () => void;
 
@@ -80,7 +75,6 @@ export function startHeartbeats(config: { enabled: boolean }): Heartbeats {
 
   return function stop() {
     if (interval) {
-      logger.debug('Stopping heartbeats');
       clearTimeout(interval);
     }
   };

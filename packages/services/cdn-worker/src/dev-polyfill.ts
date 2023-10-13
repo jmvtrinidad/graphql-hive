@@ -1,22 +1,5 @@
 import 'dotenv/config';
-import { crypto, Headers, ReadableStream, Request, Response } from '@whatwg-node/fetch';
 import type { Env } from './env';
-
-if (!globalThis.Response) {
-  globalThis.Response = Response;
-}
-if (!globalThis.Request) {
-  globalThis.Request = Request;
-}
-if (!globalThis.Headers) {
-  globalThis.Headers = Headers;
-}
-if (!globalThis.ReadableStream) {
-  globalThis.ReadableStream = ReadableStream;
-}
-if (!globalThis.crypto) {
-  globalThis.crypto = crypto;
-}
 
 export const devStorage = new Map<string, string>();
 

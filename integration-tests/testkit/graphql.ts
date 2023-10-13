@@ -1,6 +1,5 @@
 import { ExecutionResult, print } from 'graphql';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
-import { createFetch } from '@whatwg-node/fetch';
 import { getServiceHost } from './utils';
 
 const { fetch } = createFetch({

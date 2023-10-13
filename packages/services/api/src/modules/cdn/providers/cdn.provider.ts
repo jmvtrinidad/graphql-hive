@@ -3,7 +3,6 @@ import { Inject, Injectable, Scope } from 'graphql-modules';
 import { z } from 'zod';
 import { encodeCdnToken, generatePrivateKey } from '@hive/cdn-script/cdn-token';
 import type { Span } from '@sentry/types';
-import { crypto } from '@whatwg-node/fetch';
 import { HiveError } from '../../../shared/errors';
 import { isUUID } from '../../../shared/is-uuid';
 import { sentry } from '../../../shared/sentry';
