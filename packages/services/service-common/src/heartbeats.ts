@@ -1,6 +1,10 @@
 import pRetry from 'p-retry';
-import { fetch } from '@whatwg-node/fetch';
+import { createFetch } from '@whatwg-node/fetch';
 import { invariant } from './helpers';
+
+const { fetch } = createFetch({
+  useNodeFetch: true,
+});
 
 type Heartbeats = () => void;
 
@@ -44,9 +48,20 @@ export function startHeartbeats(config: { enabled: boolean }): Heartbeats {
   async function beat() {
     try {
       if (await isReady()) {
-        await pRetry(() => fetch(endpoint, { method: 'GET' }), {
-          retries: 3,
-        });
+        await pRetry(
+          async () => {
+            const response = await fetch(endpoint, { method: 'GET' });
+
+            if (response.ok) {
+              return;
+            }
+
+            throw new Error(`Heartbeat failed with status ${response.status}`);
+          },
+          {
+            retries: 3,
+          },
+        );
       }
     } catch (error) {
       onError(error as any);
@@ -65,6 +80,7 @@ export function startHeartbeats(config: { enabled: boolean }): Heartbeats {
 
   return function stop() {
     if (interval) {
+      logger.debug('Stopping heartbeats');
       clearTimeout(interval);
     }
   };
