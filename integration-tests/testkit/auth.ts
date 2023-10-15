@@ -4,10 +4,6 @@ import { createTRPCProxyClient, httpLink } from '@trpc/client';
 import { ensureEnv } from './env';
 import { getServiceHost } from './utils';
 
-const { fetch } = createFetch({
-  useNodeFetch: true,
-});
-
 const SignUpSignInUserResponseModel = z.object({
   status: z.literal('OK'),
   user: z.object({ email: z.string(), id: z.string(), timeJoined: z.number() }),
