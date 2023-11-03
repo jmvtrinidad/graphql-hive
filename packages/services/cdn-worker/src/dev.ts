@@ -7,7 +7,6 @@ import { ArtifactStorageReader } from './artifact-storage-reader';
 import { AwsClient } from './aws';
 import './dev-polyfill';
 import { devStorage, env } from './dev-polyfill';
-import { createRequestHandler } from './handler';
 import { createIsKeyValid } from './key-validation';
 
 const s3 = {
@@ -22,11 +21,6 @@ const s3 = {
 
 // eslint-disable-next-line no-process-env
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4010;
-
-const handleRequest = createRequestHandler({
-  getRawStoreValue: value => env.HIVE_DATA.get(value),
-  isKeyValid: createIsKeyValid({ s3, getCache: null, waitUntil: null, analytics: null }),
-});
 
 const artifactStorageReader = new ArtifactStorageReader(s3, env.S3_PUBLIC_URL, null);
 
@@ -82,11 +76,7 @@ function main() {
       }),
   );
 
-  const router = itty
-    .Router()
-    .get('*', handleArtifactRequest)
-    // Legacy CDN Handlers
-    .get('*', handleRequest);
+  const router = itty.Router().get('*', handleArtifactRequest);
 
   app.get('*', (request: Request) => router.handle(request));
 

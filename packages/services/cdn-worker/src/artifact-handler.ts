@@ -17,10 +17,6 @@ type ArtifactRequestHandler = {
   >;
   isKeyValid: KeyValidator;
   analytics?: Analytics;
-  fallback?: (
-    request: Request,
-    params: { targetId: string; artifactType: string },
-  ) => Promise<Response | undefined>;
 };
 
 const ParamsModel = zod.object({
@@ -113,27 +109,18 @@ export const createArtifactRequestHandler = (deps: ArtifactRequestHandler) => {
       const result = await deps
         .getArtifactAction(params.targetId, params.artifactType, eTag)
         .catch(error => {
-          if (deps.fallback) {
-            if (captureException) {
-              captureException(error);
-            } else {
-              console.error(error);
-            }
-            return null;
+          if (captureException) {
+            captureException(error);
           }
-
           return Promise.reject(error);
         });
 
       if (!result) {
-        return (
-          deps.fallback?.(request, params) ??
-          createResponse(
-            analytics,
-            'Something went wrong, really wrong.',
-            { status: 500 },
-            params.targetId,
-          )
+        return createResponse(
+          analytics,
+          'Something went wrong, really wrong.',
+          { status: 500 },
+          params.targetId,
         );
       }
 

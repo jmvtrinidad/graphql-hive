@@ -5,7 +5,6 @@ import { createArtifactRequestHandler } from './artifact-handler';
 import { ArtifactStorageReader } from './artifact-storage-reader';
 import { AwsClient } from './aws';
 import { UnexpectedError } from './errors';
-import { createRequestHandler } from './handler';
 import { createIsKeyValid } from './key-validation';
 import { createResponse } from './tracked-response';
 
@@ -65,37 +64,11 @@ const handler: ExportedHandler<Env> = {
       analytics,
     });
 
-    const handleRequest = createRequestHandler({
-      getRawStoreValue: value => env.HIVE_DATA.get(value),
-      isKeyValid,
-      analytics,
-    });
-
     const handleArtifactRequest = createArtifactRequestHandler({
       isKeyValid,
       analytics,
       async getArtifactAction(targetId, artifactType, eTag) {
         return artifactStorageReader.generateArtifactReadUrl(targetId, artifactType, eTag);
-      },
-      async fallback(request: Request, params: { targetId: string; artifactType: string }) {
-        const artifactTypeMap: Record<string, string> = {
-          metadata: 'metadata',
-          sdl: 'sdl',
-          services: 'schema',
-          supergraph: 'supergraph',
-        };
-        const artifactType = artifactTypeMap[params.artifactType];
-
-        if (artifactType) {
-          const url = request.url.replace(
-            `/artifacts/v1/${params.targetId}/${params.artifactType}`,
-            `/${params.targetId}/${artifactType}`,
-          );
-
-          return handleRequest(new Request(url, request));
-        }
-
-        return;
       },
     });
 
@@ -108,9 +81,7 @@ const handler: ExportedHandler<Env> = {
             status: 200,
           }),
       )
-      .get('*', handleArtifactRequest)
-      // Legacy CDN Handlers
-      .get('*', handleRequest);
+      .get('*', handleArtifactRequest);
 
     const sentry = new Toucan({
       dsn: env.SENTRY_DSN,
