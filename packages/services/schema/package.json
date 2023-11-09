@@ -12,7 +12,7 @@
   "devDependencies": {
     "@apollo/federation": "0.38.1",
     "@graphql-hive/external-composition": "workspace:*",
-    "@graphql-tools/stitch": "9.0.0",
+    "@graphql-tools/stitch": "9.0.3",
     "@graphql-tools/stitching-directives": "3.0.0",
     "@hive/service-common": "workspace:*",
     "@sentry/node": "7.79.0",
@@ -20,7 +20,7 @@
     "@trpc/server": "10.43.2",
     "@types/async-retry": "1.4.8",
     "@types/ioredis-mock": "8.2.5",
-    "@whatwg-node/fetch": "0.9.13",
+    "@whatwg-node/fetch": "0.9.14",
     "dotenv": "16.3.1",
     "fast-json-stable-stringify": "2.1.0",
     "fastify": "3.29.5",
